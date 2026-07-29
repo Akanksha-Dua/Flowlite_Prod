@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./.venv/Scripts/python.exe \"C:\\\\Users\\\\akanksha\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-akanksha-VS-Code-Projects-flowlite-automation\\\\79640a31-d014-417d-85f2-96b08927b5fb\\\\scratchpad\\\\inspect_goto.py\")",
+      "Bash(./.venv/Scripts/python.exe \"C:\\\\Users\\\\akanksha\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-akanksha-VS-Code-Projects-flowlite-automation\\\\79640a31-d014-417d-85f2-96b08927b5fb\\\\scratchpad\\\\inspect_scenario2_detail.py\")"
+    ]
+  }
+}

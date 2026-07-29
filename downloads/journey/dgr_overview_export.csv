@@ -1,0 +1,2 @@
+Plant Name,Date,Status,actual_ac_capacity,actual_ac_cuf,actual_dc_capacity,actual_dc_cuf,actual_generation,actual_gti,actual_normalized_pr,actual_pr,budget_ac_capacity,budget_ac_cuf,budget_dc_capacity,budget_dc_cuf,budget_generation,budget_gti,budget_pr,budget_tariff,deemed_generation,mso,net_generation,revenue
+Automation Site 1,28-Jul-2026,No Data,,,,,,,,,,,,,,,,,,,,
