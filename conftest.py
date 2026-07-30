@@ -1,10 +1,14 @@
-﻿import pytest
+﻿import os
+import pytest
 from pathlib import Path
 
 
 @pytest.fixture(scope="session")
 def credentials():
-    return {"username": "automation_dashboard", "password": "Password@123456"}
+    return {
+        "username": os.environ.get("FLOWLITE_USERNAME", "automation_dashboard"),
+        "password": os.environ.get("FLOWLITE_PASSWORD", "Password@123456"),
+    }
 
 
 @pytest.fixture(scope="session")

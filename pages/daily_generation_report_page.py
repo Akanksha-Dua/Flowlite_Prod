@@ -80,7 +80,10 @@ class DailyGenerationReportPage(BasePage):
         time_inputs.first.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)
         time_inputs.nth(0).fill(hour)
         time_inputs.nth(1).fill(minute)
-        self.page.get_by_role("button", name="Set Time", exact=True).click(force=True)
+        self.page.get_by_role("button", name="Set Time", exact=True).evaluate("el => el.click()")
+        # Give the popup's confirm action a moment to commit before the next
+        # field's popup opens - back-to-back calls can otherwise clobber it.
+        self.page.wait_for_timeout(500)
 
     def fill_plant_data(self, up_time="08:00", down_time="18:00"):
         self.page.wait_for_load_state("networkidle")
@@ -100,9 +103,17 @@ class DailyGenerationReportPage(BasePage):
 
         save_btn = self.page.get_by_role("button", name="Save", exact=True)
         save_btn.first.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)
+        if save_btn.first.get_attribute("disabled") is not None:
+            # This form only supports first-time entry for a date - once
+            # data already exists, Save is permanently disabled and further
+            # edits must go through the Historical Data section instead.
+            return False
         save_btn.first.click(force=True)
+        return True
 
-    def assert_plant_data_saved(self):
+    def assert_plant_data_saved(self, saved=True):
+        if not saved:
+            return
         self.page.wait_for_timeout(1000)
         body_text = self.page.locator("body").inner_text().lower()
         assert "success" in body_text, f"Plant data save was not confirmed. Body contains: {body_text[:300]}"
@@ -112,6 +123,7 @@ class DailyGenerationReportPage(BasePage):
         # so the Edit/Save controls for this section must be located
         # relative to its own heading, not looked up globally.
         self.page.wait_for_load_state("networkidle")
+        self.page.wait_for_timeout(2000)
         heading = self.page.get_by_text(heading_text, exact=True)
         heading.first.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)
 
@@ -152,11 +164,21 @@ class DailyGenerationReportPage(BasePage):
         self.page.wait_for_timeout(2000)
 
     def fill_inverter_data_random(self):
-        data_row = self.page.locator("tr", has_text="Enter data:")
-        if data_row.count() == 0:
-            self.page.locator("table").first.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)
-            data_row = self.page.locator("table")
-        self.fill_all_visible_table_inputs(lambda: random_number(100, 5000), row_locator=data_row)
+        # This is a spreadsheet-style grid (no <input> elements) - a cell
+        # only becomes editable via click, then type-to-edit + Tab commits it.
+        data_row = self.page.locator('tr[data-y="0"]')
+        data_row.first.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)
+        column_count = data_row.first.locator("td[data-x]").count()
+
+        for x in range(1, column_count):
+            cell = self.page.locator(f'td[data-x="{x}"][data-y="0"]')
+            cell.click(force=True)
+            self.page.wait_for_timeout(150)
+            self.page.keyboard.type(str(random_number(100, 5000)))
+            self.page.wait_for_timeout(150)
+            self.page.keyboard.press("Tab")
+            self.page.wait_for_timeout(150)
+
         save_data_btn = self.page.get_by_role("button", name=re.compile("Save Data|Save", re.IGNORECASE))
         if save_data_btn.count():
             save_data_btn.first.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)

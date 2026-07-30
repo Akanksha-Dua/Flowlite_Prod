@@ -1,0 +1,91 @@
+name: Daily Flowlite E2E Tests
+
+on:
+  schedule:
+    # 08:00 AM IST = 02:30 AM UTC
+    - cron: "30 2 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: playwright install --with-deps chromium
+
+      - name: Run tests
+        id: run_tests
+        continue-on-error: true
+        env:
+          FLOWLITE_USERNAME: ${{ secrets.FLOWLITE_USERNAME }}
+          FLOWLITE_PASSWORD: ${{ secrets.FLOWLITE_PASSWORD }}
+        run: pytest --alluredir=allure-results
+
+      - name: Checkout previous report history
+        if: always()
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Generate Allure report (with trend history)
+        if: always()
+        uses: simple-elf/allure-report-action@master
+        with:
+          allure_results: allure-results
+          allure_history: allure-history
+          allure_report: allure-report
+          keep_reports: 30
+
+      - name: Publish report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+
+      - name: Upload Allure report as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-${{ github.run_number }}
+          path: allure-history
+          retention-days: 90
+
+      - name: Send email notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.office365.com
+          server_port: 587
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          from: ${{ secrets.MAIL_USERNAME }}
+          to: akanksha@truboardpartners.com
+          subject: "Flowlite Daily Test Run - ${{ steps.run_tests.outcome == 'success' && 'PASSED' || 'FAILED' }} (#${{ github.run_number }})"
+          body: |
+            Daily Flowlite automation run finished.
+
+            Status: ${{ steps.run_tests.outcome == 'success' && 'PASSED' || 'FAILED' }}
+            Report (with history/trends): https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Fail the job if tests failed
+        if: steps.run_tests.outcome == 'failure'
+        run: exit 1
