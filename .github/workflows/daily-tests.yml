@@ -68,23 +68,27 @@ jobs:
           path: allure-history
           retention-days: 90
 
-      - name: Send email notification
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.office365.com
-          server_port: 587
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          from: ${{ secrets.MAIL_USERNAME }}
-          to: akanksha@truboardpartners.com
-          subject: "Flowlite Daily Test Run - ${{ steps.run_tests.outcome == 'success' && 'PASSED' || 'FAILED' }} (#${{ github.run_number }})"
-          body: |
-            Daily Flowlite automation run finished.
-
-            Status: ${{ steps.run_tests.outcome == 'success' && 'PASSED' || 'FAILED' }}
-            Report (with history/trends): https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
-            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      # Disabled for now until MAIL_USERNAME/MAIL_PASSWORD secrets are set up
+      # (see conversation history - Office 365 SMTP needs an app password or
+      # authenticated SMTP enabled for the sending mailbox). Re-enable by
+      # uncommenting once those secrets are ready.
+      # - name: Send email notification
+      #   if: always()
+      #   uses: dawidd6/action-send-mail@v3
+      #   with:
+      #     server_address: smtp.office365.com
+      #     server_port: 587
+      #     username: ${{ secrets.MAIL_USERNAME }}
+      #     password: ${{ secrets.MAIL_PASSWORD }}
+      #     from: ${{ secrets.MAIL_USERNAME }}
+      #     to: akanksha@truboardpartners.com
+      #     subject: "Flowlite Daily Test Run - ${{ steps.run_tests.outcome == 'success' && 'PASSED' || 'FAILED' }} (#${{ github.run_number }})"
+      #     body: |
+      #       Daily Flowlite automation run finished.
+      #
+      #       Status: ${{ steps.run_tests.outcome == 'success' && 'PASSED' || 'FAILED' }}
+      #       Report (with history/trends): https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+      #       Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Fail the job if tests failed
         if: steps.run_tests.outcome == 'failure'
