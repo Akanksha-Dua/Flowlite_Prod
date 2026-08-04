@@ -68,23 +68,29 @@ jobs:
           path: allure-history
           retention-days: 90
 
+      - name: Zip Allure report for email attachment
+        if: always()
+        run: zip -r allure-report.zip allure-report
+
       - name: Send email notification
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.office365.com
+          server_address: smtp.sendgrid.net
           server_port: 587
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          from: ${{ secrets.MAIL_USERNAME }}
+          from: akanksha@truboardpartners.com
           to: akanksha@truboardpartners.com
           subject: "Flowlite Daily Test Run - ${{ steps.run_tests.outcome == 'success' && 'PASSED' || 'FAILED' }} (#${{ github.run_number }})"
           body: |
             Daily Flowlite automation run finished.
 
             Status: ${{ steps.run_tests.outcome == 'success' && 'PASSED' || 'FAILED' }}
-            Report (with history/trends): https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+            The full Allure report is attached (unzip and open index.html).
+            Live report (with history/trends): https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
             Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          attachments: allure-report.zip
 
       - name: Fail the job if tests failed
         if: steps.run_tests.outcome == 'failure'
