@@ -76,13 +76,28 @@ def authenticated_storage(pytestconfig, playwright, credentials):
         expect(page.get_by_text("Automation Dashboard").first).to_be_visible(timeout=15_000)
     except Exception:
         failure_url = page.url
+        failure_text = ""
+        try:
+            allure.attach(
+                page.screenshot(full_page=True),
+                name="login-failure-screenshot",
+                attachment_type=allure.attachment_type.PNG,
+            )
+            failure_text = page.locator("body").inner_text()
+            allure.attach(
+                failure_text,
+                name="login-failure-page-text",
+                attachment_type=allure.attachment_type.TEXT,
+            )
+        except Exception:
+            pass
         context.close()
         browser.close()
         pytest.fail(
             "Login did not reach the Dashboard for user "
             f"'{credentials['username']}' - check that the FLOWLITE_USERNAME/"
             f"FLOWLITE_PASSWORD secrets (or defaults) are correct. "
-            f"Landed on: {failure_url}"
+            f"Landed on: {failure_url}\nPage text: {failure_text[:500]}"
         )
 
     # give the app a moment to settle before saving state
