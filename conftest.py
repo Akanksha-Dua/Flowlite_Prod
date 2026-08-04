@@ -2,7 +2,7 @@
 import pytest
 import allure
 from pathlib import Path
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -68,6 +68,19 @@ def authenticated_storage(pytestconfig, playwright, credentials):
     login_page = LoginPage(page)
     login_page.open(base_url)
     login_page.login(credentials["username"], credentials["password"])
+
+    try:
+        expect(page.get_by_text("Automation Dashboard").first).to_be_visible(timeout=15_000)
+    except Exception:
+        failure_url = page.url
+        context.close()
+        browser.close()
+        pytest.fail(
+            "Login did not reach the Dashboard for user "
+            f"'{credentials['username']}' - check that the FLOWLITE_USERNAME/"
+            f"FLOWLITE_PASSWORD secrets (or defaults) are correct. "
+            f"Landed on: {failure_url}"
+        )
 
     # give the app a moment to settle before saving state
     context.storage_state(path=str(storage_path))
