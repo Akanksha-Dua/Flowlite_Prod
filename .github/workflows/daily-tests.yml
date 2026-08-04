@@ -76,11 +76,11 @@ jobs:
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.sendgrid.net
+          server_address: smtp.gmail.com
           server_port: 587
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          from: akanksha@truboardpartners.com
+          from: ${{ secrets.MAIL_USERNAME }}
           to: akanksha@truboardpartners.com
           subject: "Flowlite Daily Test Run - ${{ steps.run_tests.outcome == 'success' && 'PASSED' || 'FAILED' }} (#${{ github.run_number }})"
           body: |
