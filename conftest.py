@@ -40,9 +40,12 @@ def pytest_sessionfinish(session, exitstatus):
 
 @pytest.fixture(scope="session")
 def credentials():
+    # An unset GitHub Actions secret still sets the env var - just to an
+    # empty string - so `or` is needed here, not `os.environ.get(key, default)`,
+    # to actually fall back to the default in that case.
     return {
-        "username": os.environ.get("FLOWLITE_USERNAME", "automation_dashboard"),
-        "password": os.environ.get("FLOWLITE_PASSWORD", "Password@123456"),
+        "username": os.environ.get("FLOWLITE_USERNAME") or "automation_dashboard",
+        "password": os.environ.get("FLOWLITE_PASSWORD") or "Password@123456",
     }
 
 
