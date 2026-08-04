@@ -53,6 +53,31 @@ class BasePage:
         download.save_as(target)
         return target
 
+    def ensure_monthly_value_entered(self, site_text: str = "Automation Site 1", value: int = 50000) -> bool:
+        """Fill in the month's value via Edit if it's showing as missing.
+
+        Operational Expenses/DSM show a dash placeholder until a value is
+        entered for the current month, and exporting then produces nothing
+        since there's no data. Returns True if a value was entered, False
+        if data already existed for this month.
+        """
+        row = self.page.locator("tr", has_text=site_text)
+        row.first.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)
+        if "—" not in row.first.inner_text():
+            return False
+
+        self.page.get_by_role("button", name="Edit", exact=True).first.click(force=True)
+
+        cell = row.first.locator('td[data-x="1"]')
+        cell.first.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)
+        cell.first.click(force=True)
+        self.page.keyboard.type(str(value))
+        self.page.keyboard.press("Tab")
+
+        self.page.get_by_role("button", name="Save", exact=True).first.click(force=True)
+        self.page.wait_for_timeout(1000)
+        return True
+
     def fill_all_visible_table_inputs(self, value_provider, row_locator: Locator = None):
         target = row_locator if row_locator is not None else self.page.locator("table")
         inputs = target.locator("input")
