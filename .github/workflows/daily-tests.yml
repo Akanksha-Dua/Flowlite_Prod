@@ -1,9 +1,9 @@
 name: Daily Flowlite E2E Tests
 
 on:
-  schedule:
-    # 08:00 AM IST = 02:30 AM UTC
-    - cron: "30 2 * * *"
+  # No native `schedule:` trigger - GitHub Actions cron runs on a best-effort
+  # basis and was consistently landing ~3 hours late. An external scheduler
+  # calls the workflow_dispatch API at the precise time instead (see README).
   workflow_dispatch: {}
 
 permissions:
