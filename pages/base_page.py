@@ -11,10 +11,19 @@ class BasePage:
         self.page = page
 
     def goto(self, url: str):
-        self.page.goto(url)
+        # "load" (Playwright's default) waits for every last resource on the
+        # page and can hang well past its timeout if anything keeps a
+        # connection open (e.g. a websocket/long-poll) - domcontentloaded is
+        # enough for interacting with the page, and Playwright's own
+        # actionability waits handle the rest per-element.
+        self.page.goto(url, wait_until="domcontentloaded")
 
     def wait_for_url_contains(self, fragment: str):
-        self.page.wait_for_url(re.compile(re.escape(fragment)), timeout=self.DEFAULT_TIMEOUT)
+        # This app navigates client-side (SPA route changes), which never
+        # fires another "load" event (Playwright's wait_until default) -
+        # "commit" only waits for the URL itself to change, which is all we
+        # need here; actual content readiness is checked separately.
+        self.page.wait_for_url(re.compile(re.escape(fragment)), timeout=self.DEFAULT_TIMEOUT, wait_until="commit")
 
     def click_text(self, text: str, exact: bool = True):
         locator = self.page.get_by_text(text, exact=exact).first

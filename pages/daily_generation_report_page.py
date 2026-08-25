@@ -132,7 +132,7 @@ class DailyGenerationReportPage(BasePage):
         edit_btn.first.click(force=True)
 
         row = heading.locator("xpath=following::table[1]").locator("tbody tr").first
-        field = row.locator('input[type="text"]').first
+        field = row.locator('input[type="number"]').first
         field.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)
         field.fill(str(value_provider()))
 
@@ -156,7 +156,8 @@ class DailyGenerationReportPage(BasePage):
     def open_inverter_tab(self):
         self.page.wait_for_load_state("networkidle")
         self.click_text("Inverter", exact=True)
-        self.click_button("Table", exact=True)
+        # The Form/Table toggle is a plain <span>, not a real button.
+        self.click_text("Table", exact=True)
 
         # Switching tabs triggers its own async data load, which can
         # swallow clicks made on other controls while it's in flight.

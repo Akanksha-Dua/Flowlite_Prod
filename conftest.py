@@ -73,7 +73,10 @@ def authenticated_storage(pytestconfig, playwright, credentials):
     login_page.login(credentials["username"], credentials["password"])
 
     try:
-        expect(page.get_by_text("Automation Dashboard").first).to_be_visible(timeout=15_000)
+        # The dashboard heading used to be a single "Automation Dashboard"
+        # text node; the app now renders it as a two-part breadcrumb, so
+        # check for a stable, unambiguous dashboard-only element instead.
+        expect(page.get_by_role("button", name="Yearly View", exact=True)).to_be_visible(timeout=15_000)
     except Exception:
         failure_url = page.url
         failure_text = ""
@@ -112,6 +115,6 @@ def auth_page(browser, authenticated_storage, pytestconfig):
     """Provide a `page` that's already authenticated using saved storage state."""
     context = browser.new_context(storage_state=authenticated_storage)
     page = context.new_page()
-    page.goto(pytestconfig.getini("base_url"))
+    page.goto(pytestconfig.getini("base_url"), wait_until="domcontentloaded")
     yield page
     context.close()

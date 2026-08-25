@@ -1,7 +1,7 @@
 ﻿import re
 
 import allure
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 try:
     from .base_page import BasePage
@@ -15,7 +15,10 @@ class DashboardPage(BasePage):
 
     def is_loaded(self):
         self.wait_for_url_contains("flowlite.trugreen.ai")
-        self.assert_text_visible("Automation Dashboard")
+        # The dashboard heading used to be a single "Automation Dashboard"
+        # text node; the app now renders it as a two-part breadcrumb, so
+        # check for a stable, unambiguous dashboard-only element instead.
+        expect(self.page.get_by_role("button", name="Yearly View", exact=True)).to_be_visible(timeout=self.DEFAULT_TIMEOUT)
 
     def _open_sidebar(self):
         nav = self.page.locator("nav").first
@@ -36,28 +39,32 @@ class DashboardPage(BasePage):
     def open_daily_generation_reports(self):
         self._open_sidebar()
 
-        report_link = self.page.locator('a[title="Daily Generation Reports"]')
-
-        # The "Data Upload" button only opens the submenu - it's a toggle,
-        # so only click it when the submenu isn't already expanded.
-        if not (report_link.count() and report_link.first.is_visible()):
+        # "Daily Generation Reports" is a plain text label (not a link/button)
+        # that's always in the DOM twice (a visible/hidden pair for responsive
+        # layout) and only visible once "Data Upload" - a toggle - is
+        # expanded, so only click it when not already expanded.
+        report_items = self.page.get_by_text("Daily Generation Reports", exact=True)
+        visible_item = next(
+            (report_items.nth(i) for i in range(report_items.count()) if report_items.nth(i).is_visible()),
+            None,
+        )
+        if visible_item is None:
             data_upload = self.page.get_by_role("button", name=re.compile("Data Upload", re.IGNORECASE))
             if data_upload.count():
                 data_upload.first.click(timeout=5000, force=True)
             self.page.wait_for_timeout(1000)
+            report_items = self.page.get_by_text("Daily Generation Reports", exact=True)
+            visible_item = next(
+                (report_items.nth(i) for i in range(report_items.count()) if report_items.nth(i).is_visible()),
+                None,
+            )
 
-        if report_link.count():
-            try:
-                report_link.first.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)
-                # The "Data Upload" toggle button visually overlaps this link
-                # while the submenu is expanding, so a positional click (even
-                # forced) can land on the button instead - dispatch on the DOM node.
-                report_link.first.evaluate("el => el.click()")
-                return
-            except Exception:
-                pass
-
-        self.goto("https://flowlite.trugreen.ai/upload/page-1")
+        if visible_item is not None:
+            # A positional/force click can still land on an overlapping
+            # element mid-animation - dispatch directly on the DOM node.
+            visible_item.evaluate("el => el.click()")
+        else:
+            self.goto("https://flowlite.trugreen.ai/upload/page-1")
 
     def _click_sidebar_link(self, href: str, fallback_url: str):
         """Navigate via the sidebar link's client-side routing.
