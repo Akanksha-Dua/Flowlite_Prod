@@ -1,0 +1,42 @@
+Dashboard
+Data Upload
+Daily Generation Reports
+Operational Expenses
+DSM
+DGR Overview
+Export Reports
+Master Data
+Clients
+Sites
+AD
+AUTOMATION
+/
+DASHBOARD
+Calendar Year
+Financial Year
+Select Year:
+Yearly View
+Monthly View
+
+1 sites
+
+Plant: Automation Site 1
+No Data
+Partial Data
+Full Data
+Apr
+May
+Jun
+Jul
+Aug
+Sep
+Oct
+Nov
+Dec
+Jan
+Feb
+Mar
+Mon
+Wed
+Fri
+24 data entries in the current year
