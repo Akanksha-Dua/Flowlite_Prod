@@ -1,0 +1,193 @@
+Dashboard
+Executive Summary
+Leadership Dashboard
+Master PlantList
+Data Filing
+Data Upload
+Daily Generation Reports
+Operational Expenses
+DSM
+DGR Overview
+Export Reports
+Master Data
+Clients
+Sites
+AD
+AUTOMATION
+/
+MASTER PLANTS LIST
+Last Refresh: 29-Aug-26 2:32:10 AM
+Master Plants List
+
+FY 26-27 · 06-04-2026 - 25-08-2026
+
+PLANTS
+
+1 sites
+
+TOTAL CAPACITY
+
+100.00 MW/MWp
+
+All
+Solar
+Wind
+Filters
+0
+ALL PLANT PERFORMANCE
+Click on column headers to sort
+(B) Budget · (A) Actual
+CSV
+Excel
+PLANT
+	
+STATE
+	
+CLIENT
+	
+CONNECTIVITY
+kV
+	
+AC CAP
+MW
+	
+DC CAP
+MWp
+	
+AGE
+Years
+	
+GEN (B)
+MU
+	
+GEN (A)
+MU
+	
+GEN VAR
+%
+	
+POA/WS (B)
+kWh/m² . m/s
+	
+POA/WS (A)
+kWh/m² . m/s
+	
+POA/WS VAR
+%
+	
+DC CUF (B)
+%
+	
+DC CUF (A)
+%
+	
+DC CUF VAR
+%
+	
+AC CUF (B)
+%
+	
+AC CUF (A)
+%
+	
+AC CUF VAR
+%
+	
+PR (B)
+%
+	
+STANDARD (PR)
+%
+	
+PR VAR
+%
+	
+CORR. (PR)
+%
+	
+TEMP CORR. (PR)
+%
+	
+PA (B)
+%
+	
+PA WITH FM
+%
+	
+PA WITHOUT FM
+%
+	
+PA VAR
+%
+	
+GA (B)
+%
+	
+GA (A)
+%
+	
+GA VAR
+%
+
+
+Automation Site 1
+	
+Haryana
+	
+1
+	
+	
+100.00
+	
+100.00
+	
+5.66
+	
+0.00
+	
+0.26
+	
+0.00%
+	
+0.00
+	
+0.00
+	
+—
+	
+—
+	
+1143.97
+	
+—
+	
+—
+	
+775.90
+	
+—
+	
+—
+	
+—
+	
+—
+	
+—
+	
+—
+	
+—
+	
+79.67
+	
+57.72
+	
+—
+	
+—
+	
+77.67
+	
+—
+1 plants · sorted by Plant
