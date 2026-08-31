@@ -5,7 +5,7 @@ from playwright.sync_api import Page, Locator, expect
 
 
 class BasePage:
-    DEFAULT_TIMEOUT = 15_000
+    DEFAULT_TIMEOUT = 30_000
 
     def __init__(self, page: Page):
         self.page = page

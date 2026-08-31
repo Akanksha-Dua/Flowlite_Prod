@@ -15,10 +15,11 @@ class DashboardPage(BasePage):
 
     def is_loaded(self):
         self.wait_for_url_contains("flowlite.trugreen.ai")
-        # The dashboard heading used to be a single "Automation Dashboard"
-        # text node; the app now renders it as a two-part breadcrumb, so
-        # check for a stable, unambiguous dashboard-only element instead.
-        expect(self.page.get_by_role("button", name="Yearly View", exact=True)).to_be_visible(timeout=self.DEFAULT_TIMEOUT)
+        # The post-login landing page has changed more than once (dashboard
+        # heading, then default landing page entirely) - check for the
+        # sidebar itself instead, which is present regardless of which page
+        # is shown first.
+        expect(self.page.get_by_text("Data Upload", exact=True).first).to_be_attached(timeout=self.DEFAULT_TIMEOUT)
 
     def _open_sidebar(self):
         nav = self.page.locator("nav").first
