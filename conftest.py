@@ -45,7 +45,7 @@ def credentials():
     # to actually fall back to the default in that case.
     return {
         "username": os.environ.get("FLOWLITE_USERNAME") or "automation_dashboard",
-        "password": os.environ.get("FLOWLITE_PASSWORD") or "Password@123456",
+        "password": os.environ.get("FLOWLITE_PASSWORD") or "Password@1234567",
     }
 
 

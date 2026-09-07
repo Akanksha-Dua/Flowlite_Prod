@@ -13,7 +13,7 @@ class LoginPage(BasePage):
     def open(self, url: str):
         self.goto(url)
 
-    def login(self, username: str = "automation_dashboard", password: str = "Password@123456"):
+    def login(self, username: str = "automation_dashboard", password: str = "Password@1234567"):
         username_field = self.page.locator("#username")
         username_field.wait_for(state="visible", timeout=self.DEFAULT_TIMEOUT)
         username_field.fill(username)

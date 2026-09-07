@@ -3,7 +3,7 @@ import re
 
 base_url='https://flowlite.trugreen.ai/'
 username='automation_dashboard'
-password='Password@123456'
+password='Password@1234567'
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
