@@ -1,2 +1,2 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","70768","Full user journey: data entry, historical edits, exports, logout","tests","2026-09-07","passed","2026-09-07","","test_flowlite_e2e","",""
+"","79541","Full user journey: data entry, historical edits, exports, logout","tests","2026-09-07","passed","2026-09-07","","test_flowlite_e2e","",""
