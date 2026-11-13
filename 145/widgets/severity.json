@@ -1,1 +1,1 @@
-[{"uid":"7c4c0d8ef38d8f06","name":"Full user journey: data entry, historical edits, exports, logout","time":{"start":1794547618556,"stop":1794547727545,"duration":108989},"status":"broken","severity":"critical"}]
+[{"uid":"f50ce33c9657305c","name":"Full user journey: data entry, historical edits, exports, logout","time":{"start":1794548100527,"stop":1794548160528,"duration":60001},"status":"passed","severity":"critical"}]
